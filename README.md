@@ -36,7 +36,14 @@ Instale as dependências dentro da pasta `server`
 cd server
 npm install
 ```
-- No arquivo `.env` incluir os dados de conexão com o banco de dados **MySQL**, no arquivo `server/database.sql` tem o backup do banco de dados
+- No arquivo `.env` incluir em `PORT` a porta que vai executar a api e os dados de conexão com o banco de dados **MySQL**, no arquivo `server/database.sql` tem o backup do banco de dados
+```bash
+PORT=4004
+DBHOST=localhost
+DBUSER=
+DBPASSWORD=
+DBNAME=devbage
+```
 
 ### Rodar Server/API
 ```
@@ -51,6 +58,11 @@ Instale as dependências dentro da pasta `client`
 cd client
 npm install
 ```
+- No arquivo `.env` incluir em `VUE_APP_API_URL` a url que vai executar a api
+```bash
+VUE_APP_API_URL= url da api
+```
+
 ### Rodar Frontend
 ```
 npm run serve

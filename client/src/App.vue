@@ -117,7 +117,7 @@ export default {
     },
     saveItem(item) {
       axios({
-        url: 'http://localhost:4000',
+        url: `${process.env.VUE_APP_API_URL}`,
         method: 'post',
         data: {
           query: `
@@ -150,7 +150,7 @@ export default {
   },
   created() {
     axios({
-      url: 'http://localhost:4000',
+      url: `${process.env.VUE_APP_API_URL}`,
       method: 'post',
       data: {
         query: `
