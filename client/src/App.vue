@@ -2,8 +2,8 @@
   <div>
     <div class="row">
       <div class="items col-md-7">
-      <input type="text" class="form-control" v-model="filter" placeholder="O que você está buscando?"/>
-      <br/>
+        <input type="text" class="form-control" v-model="filter" placeholder="O que você está buscando?"/>
+        <br/>
         <div class="list-group">
           <div class="list-group-item" v-for="item in filteredItems" v-bind:key="item.id">
             <div class="row">
@@ -28,6 +28,18 @@
             </div>
           </div>
         </div>
+        <hr/>
+        <div class="form-group">
+          <input type="text" class="form-control" v-model="item.category" placeholder="Categoria"/>
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" v-model="item.description" placeholder="Descrição"/>
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" v-model.number="item.price" placeholder="Preço"/>
+        </div>
+        <button class="btn btn-outline-info btn-block" @click="saveItem(item)">Adicionar</button>
+
       </div>
       <div class="order col-md-5">
         <div class="row">
@@ -60,12 +72,14 @@
 <script>
 import 'bootstrap/dist/css/bootstrap.css';
 import 'font-awesome/css/font-awesome.css';
+import axios from 'axios/dist/axios';
 
 export default {
   name: 'App',
   data() {
     return {
       items: [],
+      item: {},
       filter: "",
       order: {
         id: Math.floor(Math.random() * 10000),
@@ -100,6 +114,32 @@ export default {
           this.order.orderItems.splice(this.order.orderItems.indexOf(existingItem), 1);
         }
       }
+    },
+    saveItem(item) {
+      axios({
+        url: 'http://localhost:4000',
+        method: 'post',
+        data: {
+          query: `
+            mutation ($item: ItemInput) {
+              newItem: saveItem (item: $item) {
+                id
+                category
+                description
+                price
+              }
+            }
+          `  ,
+          variables: {
+            item
+          }
+        }
+      }).then(response => {
+        const body = response.data;
+        const query = body.data;
+        this.items.push(query.newItem);
+        this.item = {};
+      })
     }
   },
   computed: {
@@ -109,9 +149,26 @@ export default {
     }
   },
   created() {
-    this.items.push({ id: 1, category: 'Bebida', description: 'Água', price: 5 });
-    this.items.push({ id: 2, category: 'Bebida', description: 'Suco', price: 10 });
-    this.items.push({ id: 3, category: 'Bebida', description: 'Refrigerante', price: 12 });
+    axios({
+      url: 'http://localhost:4000',
+      method: 'post',
+      data: {
+        query: `
+          {
+            items {
+              id
+              category
+              description
+              price
+            }
+          }
+        `  
+      }
+    }).then(response => {
+      const body = response.data;
+      const query = body.data;
+      this.items = query.items;
+    });
   }
 };
 </script>
